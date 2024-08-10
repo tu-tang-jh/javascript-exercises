@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Decision Question Tree</title>
+    <style>
+      .question {
+        margin-bottom: 20px;
+      }
+      .option {
+        margin-bottom: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <p id="result"></p>
+
+    <script>
+      const questionTree = [
+        {
+          id: 1,
+          question: "Do you like programming?",
+          options: [
+            { label: "Yes", nextQuestion: 2 },
+            { label: "No", nextQuestion: 3 },
+          ],
+        },
+        {
+          id: 2,
+          question: "What language do you prefer?",
+          options: [
+            { label: "JavaScript", nextQuestion: 4 },
+            { label: "Python", nextQuestion: 5 },
+          ],
+        },
+        {
+          id: 3,
+          question: "What do you like to do instead?",
+          options: [
+            { label: "Design", nextQuestion: 6 },
+            { label: "Writing", nextQuestion: 7 },
+            { label: "Gaming", nextQuestion: 8 },
+          ],
+        },
+        {
+          id: 4,
+          question: "Do you prefer front-end or back-end development?",
+          options: [
+            { label: "Front-end", nextQuestion: 9 },
+            { label: "Back-end", nextQuestion: 10 },
+          ],
+        },
+        {
+          id: 5,
+          question: "What kind of Python projects do you like?",
+          options: [
+            { label: "Data Science", nextQuestion: 11 },
+            { label: "Web Development", nextQuestion: 12 },
+            { label: "Automation", nextQuestion: 13 },
+          ],
+        },
+      ];
+
+      const results = [];
+
+      const renderQuestionTree = () => {
+        const rootElement = document.getElementById("root");
+        const resultElement = document.getElementById("result");
+        rootElement.innerHTML = "";
+        resultElement.textContent = "";
+
+        const renderQuestion = (questionId) => {
+          const question = questionTree.find((q) => q.id === questionId);
+          const { question: questionText, options } = question;
+          const questionElement = document.createElement("div");
+          questionElement.classList.add("question");
+
+          const questionTextElement = document.createElement("h2");
+          questionTextElement.textContent = questionText;
+          questionElement.appendChild(questionTextElement);
+
+          options.forEach((option) => {
+            const optionElement = document.createElement("div");
+            optionElement.classList.add("option");
+
+            const optionButton = document.createElement("button");
+            optionButton.textContent = option.label;
+            optionButton.dataset.nextQuestion = option.nextQuestion;
+
+            optionButton.addEventListener("click", () => {
+              // Disable all buttons in the current question
+              const buttons = questionElement.querySelectorAll("button");
+              buttons.forEach((btn) => {
+                btn.disabled = true;
+              });
+
+              // Add the selected option to the results array
+              results.push(option.label);
+              resultElement.textContent = `Your responses: ${results.join(
+                " - "
+              )}`;
+
+              renderQuestion(option.nextQuestion);
+            });
+
+            optionElement.appendChild(optionButton);
+            questionElement.appendChild(optionElement);
+          });
+
+          rootElement.appendChild(questionElement);
+        };
+
+        renderQuestion(1);
+      };
+
+      renderQuestionTree();
+    </script>
+  </body>
+</html>
